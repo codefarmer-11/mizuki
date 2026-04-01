@@ -20,6 +20,13 @@ export const zh_CN: Translation = {
 	[Key.postList]: "文章列表",
 	[Key.tableOfContents]: "目录",
 	[Key.tocEmpty]: "当前页面没有目录",
+	[Key.studyNotes]: "学习笔记",
+	[Key.essay]: "随笔",
+	[Key.toolbox]: "工具箱",
+	[Key.journal]: "手记",
+	[Key.cookbook]: "cookbook",
+	[Key.resources]: "资源",
+	[Key.extensionComponent]: "扩展工具",
 
 	// 公告栏
 	[Key.announcement]: "公告",

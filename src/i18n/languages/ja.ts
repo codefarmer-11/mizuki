@@ -20,6 +20,13 @@ export const ja: Translation = {
 	[Key.postList]: "投稿の一覧",
 	[Key.tableOfContents]: "目次",
 	[Key.tocEmpty]: "目次はありません",
+	[Key.studyNotes]: "学習ノート",
+	[Key.essay]: "随筆",
+	[Key.toolbox]: "ツールボックス",
+	[Key.journal]: "手記",
+	[Key.cookbook]: "cookbook",
+	[Key.resources]: "リソース",
+	[Key.extensionComponent]: "拡張部品",
 
 	// お知らせ
 	[Key.announcement]: "お知らせ",

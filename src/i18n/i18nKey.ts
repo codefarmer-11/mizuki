@@ -17,6 +17,13 @@ enum I18nKey {
 	postList = "postList",
 	tableOfContents = "tableOfContents",
 	tocEmpty = "tocEmpty",
+	studyNotes = "studyNotes",
+	essay = "essay",
+	journal = "journal",
+	toolbox = "toolbox",
+	cookbook = "cookbook",
+	resources = "resources",
+	extensionComponent = "extensionComponent",
 
 	// 公告栏
 	announcement = "announcement",
