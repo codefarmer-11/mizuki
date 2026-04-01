@@ -26,15 +26,15 @@ const SITE_TIMEZONE = 8; //设置你的网站时区 from -12 to 12 default in UT
 export const siteConfig: SiteConfig = {
 	title: "MoonL",
 	subtitle: "One demo website",
-	siteURL: "https://mizuki.mysqil.com/", // 请替换为你的站点URL，以斜杠结尾
-	siteStartDate: "2025-01-01", // 站点开始运行日期，用于站点统计组件计算运行天数
+	siteURL: "https://lysj.work/", // 请替换为你的站点URL，以斜杠结尾
+	siteStartDate: "2026-03-30", // 站点开始运行日期，用于站点统计组件计算运行天数
 
 	timeZone: SITE_TIMEZONE,
 
 	lang: SITE_LANG,
 
 	themeColor: {
-		hue: 240, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
+		hue: 60, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
 		fixed: false, // 对访问者隐藏主题色选择器
 	},
 
@@ -55,7 +55,7 @@ export const siteConfig: SiteConfig = {
 		// 显示模式："text-icon" 显示图标+文本，"logo" 仅显示Logo
 		mode: "text-icon",
 		// 顶栏标题文本
-		text: "MizukiUI",
+		text: "MoonL",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.webp
 		icon: "assets/home/home.webp",
 		// 网站Logo图片路径
@@ -125,16 +125,20 @@ export const siteConfig: SiteConfig = {
 		// 支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播
 		src: {
 			desktop: [
-				"/assets/desktop-banner/1.webp",
-				"/assets/desktop-banner/2.webp",
-				"/assets/desktop-banner/3.webp",
-				"/assets/desktop-banner/4.webp",
+				// "/assets/desktop-banner/1.webp",
+				// "/assets/desktop-banner/2.webp",
+				// "/assets/desktop-banner/3.webp",
+				// "/assets/desktop-banner/4.webp",
+				// "/assets/desktop-banner/5.webp",
+				// "/assets/desktop-banner/6.webp",
 			], // 桌面横幅图片
 			mobile: [
-				"/assets/mobile-banner/1.webp",
-				"/assets/mobile-banner/2.webp",
-				"/assets/mobile-banner/3.webp",
-				"/assets/mobile-banner/4.webp",
+				// "/assets/mobile-banner/1.webp",
+				// "/assets/mobile-banner/2.webp",
+				// "/assets/mobile-banner/3.webp",
+				// "/assets/mobile-banner/4.webp",
+				// "/assets/mobile-banner/5.webp",
+				// "/assets/mobile-banner/6.webp",
 			], // 移动横幅图片
 		}, // 使用本地横幅图片
 
@@ -162,7 +166,7 @@ export const siteConfig: SiteConfig = {
 
 		homeText: {
 			enable: true, // 在主页显示自定义文本
-			title: "わたしの部屋", // 主页横幅主标题
+			title: "MoonL", // 主页横幅主标题
 
 			subtitle: [
 				"特別なことはないけど、君がいると十分です",
@@ -245,16 +249,20 @@ export const siteConfig: SiteConfig = {
 export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	src: {
 		desktop: [
-			"/assets/desktop-banner/1.webp",
-			"/assets/desktop-banner/2.webp",
-			"/assets/desktop-banner/3.webp",
-			"/assets/desktop-banner/4.webp",
+			// "/assets/desktop-banner/1.webp",
+			// "/assets/desktop-banner/2.webp",
+			// "/assets/desktop-banner/3.webp",
+			// "/assets/desktop-banner/4.webp",
+			// "/assets/desktop-banner/5.webp",
+			// "/assets/desktop-banner/6.webp",
 		], // 桌面横幅图片
 		mobile: [
-			"/assets/mobile-banner/1.webp",
-			"/assets/mobile-banner/2.webp",
-			"/assets/mobile-banner/3.webp",
-			"/assets/mobile-banner/4.webp",
+			// "/assets/mobile-banner/1.webp",
+			// "/assets/mobile-banner/2.webp",
+			// "/assets/mobile-banner/3.webp",
+			// "/assets/mobile-banner/4.webp",
+			// "/assets/mobile-banner/5.webp",
+			// "/assets/mobile-banner/6.webp",
 		], // 移动横幅图片
 	}, // 使用本地横幅图片
 	position: "center", // 壁纸位置，等同于 object-position
@@ -273,55 +281,41 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Archive,
 		// 支持自定义导航栏链接，支持多级菜单
 		{
-			name: "Links",
-			url: "/links/",
-			icon: "material-symbols:link",
+			name: "Journal",
+			url: "#",
+			icon: "material-symbols:edit",
 			children: [
 				{
-					name: "GitHub",
-					url: "https://github.com/matsuzaka-yuki/Mizuki",
-					external: true,
-					icon: "fa7-brands:github",
+					name: "StudyNotes",
+					url: "/studyNotes/",
+					icon: "material-symbols:stylus-note",
 				},
 				{
-					name: "Bilibili",
-					url: "https://space.bilibili.com/701864046",
-					external: true,
-					icon: "fa7-brands:bilibili",
+					name: "Essay",
+					url: "/essay/",
+					icon: "material-symbols:article",
 				},
 				{
-					name: "Gitee",
-					url: "https://gitee.com/matsuzakayuki/Mizuki",
-					external: true,
-					icon: "mdi:git",
+					name: "Cookbook",
+					url: "/cookbook/",
+					icon: "material-symbols:book",
 				},
 			],
 		},
 		{
-			name: "My",
-			url: "/content/",
-			icon: "material-symbols:person",
+			name: "Toolbox",
+			url: "#",
+			icon: "material-symbols:settings-rounded",
 			children: [
 				{
-					name: "Anime",
-					url: "/anime/",
-					icon: "material-symbols:movie",
+					name: "Resources",
+					url: "/resources/",
+					icon: "material-symbols:web",
 				},
 				{
-					name: "Diary",
-					url: "/diary/",
-					icon: "material-symbols:book",
-				},
-				{
-					name: "Gallery",
-					url: "/albums/",
-					icon: "material-symbols:photo-library",
-				},
-				{
-					name: "Devices",
-					url: "/devices/",
-					icon: "material-symbols:devices",
-					external: false,
+					name: "ExtensionComponent",
+					url: "/extension",
+					icon: "material-symbols:extension",
 				},
 			],
 		},
@@ -336,40 +330,18 @@ export const navBarConfig: NavBarConfig = {
 					icon: "material-symbols:person",
 				},
 				{
-					name: "Friends",
-					url: "/friends/",
-					icon: "material-symbols:group",
+					name: "My",
+					url: "/test/",
+					icon: "material-symbols:person",
 				},
 			],
-		},
-		{
-			name: "Others",
-			url: "#",
-			icon: "material-symbols:more-horiz",
-			children: [
-				{
-					name: "Projects",
-					url: "/projects/",
-					icon: "material-symbols:work",
-				},
-				{
-					name: "Skills",
-					url: "/skills/",
-					icon: "material-symbols:psychology",
-				},
-				{
-					name: "Timeline",
-					url: "/timeline/",
-					icon: "material-symbols:timeline",
-				},
-			],
-		},
+		}
 	],
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/avatar.webp", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
-	name: "まつざか ゆき",
+	avatar: "", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
+	name: "Sekiro",
 	bio: "世界は大きい、君は行かなければならない",
 	typewriter: {
 		enable: true, // 启用个人简介打字机效果
@@ -715,5 +687,6 @@ export const widgetConfigs = {
 	relatedPosts: relatedPostsConfig,
 	randomPosts: randomPostsConfig,
 } as const;
+
 
 // umamiConfig相关配置已移动至astro.config.mjs中,统计脚本请自行在Layout.astro文件的<head>中插入
