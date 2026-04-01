@@ -33,8 +33,16 @@ jobs:
         with:
           version: 10.22.0
           run_install: false
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+
+      - name: Sync Content
+        run: pnpm run sync-content
+        env:
+          CONTENT_REPO_URL: ${{ secrets.CONTENT_REPO_URL }}
+          USE_SUBMODULE: true
+
       - name: Build site
         run: pnpm run build
         env:
