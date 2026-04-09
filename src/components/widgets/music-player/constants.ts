@@ -42,7 +42,7 @@ export const LOCAL_PLAYLIST: Song[] = [
 export const DEFAULT_SONG: Song = {
 	title: "Sample Song",
 	artist: "Sample Artist",
-	cover: "/favicon/favicon.ico",
+	cover: "/favicon/favicon.svg",
 	url: "",
 	duration: 0,
 	id: 0,
