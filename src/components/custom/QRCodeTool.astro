@@ -1,6 +1,6 @@
 ---
 // 组件：QRCodeTool.astro
-// 样式优化：无边框，左右并排，干净简洁
+// 已修复 TypeScript 类型错误，通过 astro check 检查
 ---
 
 <div class="qr-tool">
@@ -52,7 +52,7 @@
     .qr-panel {
         flex: 1 1 300px;
         max-width: 360px;
-        background: transparent; /* 无背景边框感 */
+        background: transparent;
         border-radius: 0;
         padding: 0;
         box-shadow: none;
@@ -84,7 +84,6 @@
         gap: 1rem;
     }
 
-    /* 输入框 */
     input[type="text"] {
         width: 100%;
         padding: 12px 16px;
@@ -102,7 +101,6 @@
         background: var(--color-bg, #fff);
     }
 
-    /* 按钮 */
     button {
         background: var(--color-primary, #0070f3);
         color: white;
@@ -120,7 +118,6 @@
         background: #0051a2;
     }
 
-    /* 文件上传按钮美化 */
     .file-label {
         display: inline-block;
         width: 100%;
@@ -139,7 +136,6 @@
         background: var(--color-bg, #fff);
     }
 
-    /* 画布容器 */
     .qr-canvas-container {
         display: flex;
         justify-content: center;
@@ -151,12 +147,10 @@
         max-width: 100%;
         height: auto;
         border-radius: 12px;
-        /* 完全无边框 */
         border: none;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    /* 预览图片区域 */
     .preview-box {
         display: flex;
         justify-content: center;
@@ -171,7 +165,6 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    /* 解析结果显示框 */
     .result-box {
         padding: 14px 16px;
         background: var(--color-bg-secondary, #f9f9f9);
@@ -182,7 +175,6 @@
         border: 1px solid var(--color-border, #eee);
     }
 
-    /* 脚注小字 */
     .footnote {
         font-size: 0.8rem;
         color: var(--color-text-secondary, #777);
@@ -190,7 +182,6 @@
         text-align: center;
     }
 
-    /* 适配暗色模式（使用 Astro 常用变量） */
     :root {
         --color-primary: #0070f3;
         --color-bg: #ffffff;
@@ -208,7 +199,6 @@
         --color-border: #444444;
     }
 
-    /* 响应式：小屏幕自动上下堆叠 */
     @media (max-width: 640px) {
         .qr-tool {
             gap: 1rem;
@@ -220,34 +210,43 @@
 	import QRCode from 'qrcode'
 	import jsQR from 'jsqr'
 
-	// --- 生成部分 ---
-	const canvas = document.getElementById('qrCanvas')
-	const input = document.getElementById('qrInput')
-	const genBtn = document.getElementById('generateBtn')
+	// 确保元素存在，如果不存在则抛出清晰错误
+	const canvas = document.getElementById('qrCanvas') as HTMLCanvasElement | null
+	const input = document.getElementById('qrInput') as HTMLInputElement | null
+	const genBtn = document.getElementById('generateBtn') as HTMLButtonElement | null
+
+	if (!canvas || !input || !genBtn) {
+		throw new Error('生成二维码所需的 DOM 元素未找到')
+	}
 
 	async function generateQR() {
-		const text = input?.value.trim()
+		const text = input.value.trim()
 		if (!text) {
 			alert('请输入内容')
 			return
 		}
 		try {
-			await QRCode.toCanvas(canvas, text, { width: 250, margin: 2 })
+			await QRCode.toCanvas(canvas!, text, { width: 250, margin: 2 })
 		} catch (err) {
-			alert('生成失败：' + err.message)
+			alert('生成失败：' + (err instanceof Error ? err.message : String(err)))
 		}
 	}
 
-	genBtn?.addEventListener('click', generateQR)
+	genBtn.addEventListener('click', generateQR)
 	generateQR() // 默认生成示例
 
 	// --- 解析部分 ---
-	const fileInput = document.getElementById('qrFile')
-	const resultDiv = document.getElementById('decodeResult')
-	const previewImg = document.getElementById('previewImg')
+	const fileInput = document.getElementById('qrFile') as HTMLInputElement | null
+	const resultDiv = document.getElementById('decodeResult') as HTMLDivElement | null
+	const previewImg = document.getElementById('previewImg') as HTMLImageElement | null
 
-	fileInput?.addEventListener('change', (e) => {
-		const file = e.target.files[0]
+	if (!fileInput || !resultDiv || !previewImg) {
+		throw new Error('解析二维码所需的 DOM 元素未找到')
+	}
+
+	fileInput.addEventListener('change', (e: Event) => {
+		const target = e.target as HTMLInputElement | null
+		const file = target?.files?.[0]
 		if (!file) return
 
 		const url = URL.createObjectURL(file)
@@ -260,6 +259,10 @@
 		img.onload = () => {
 			const canvasElem = document.createElement('canvas')
 			const ctx = canvasElem.getContext('2d')
+			if (!ctx) {
+				resultDiv.textContent = '无法获取 Canvas 上下文'
+				return
+			}
 
 			const maxWidth = 800
 			let width = img.width
