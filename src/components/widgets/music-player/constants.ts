@@ -10,7 +10,7 @@ export const LOCAL_PLAYLIST: Song[] = [
 		title: "Secret Betrayal",
 		artist: "北村友香",
 		cover: "assets/music/cover/Secret Betrayal.jpg",
-		url: "assets/music/url/dazbee.mp3",
+		url: "assets/music/url/北村友香,東京混声合唱団 - Secret Betrayal.mp3",
 		duration: 0,
 	},
 	{
@@ -18,7 +18,7 @@ export const LOCAL_PLAYLIST: Song[] = [
 		title: "Delicate Weapon",
 		artist: "Grimes/Lizzy Wizzy",
 		cover: "assets/music/cover/Delicate Weapon.jpg",
-		url: "assets/music/url/hitori.mp3",
+		url: "assets/music/url/Grimes,Lizzy Wizzy - Delicate Weapon.mp3",
 		duration: 240,
 	},
 	{
