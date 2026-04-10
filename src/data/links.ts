@@ -79,12 +79,12 @@ export const linksData: LinkItem[] = [
 ];
 
 // 获取所有友情链接数据
-export function getFriendsList(): LinkItem[] {
+export function getLinkssList(): LinkItem[] {
 	return linksData;
 }
 
 // 获取随机排序的友情链接数据
-export function getShuffledFriendsList(): LinkItem[] {
+export function getShuffledLinksList(): LinkItem[] {
 	const shuffled = [...linksData];
 	for (let i = shuffled.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));

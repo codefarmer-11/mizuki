@@ -6,13 +6,13 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getEntry, render } from "astro:content";
 
 import { siteConfig } from "../config";
-import { getShuffledlinksList } from "../data/links";
+import { getShuffledLinksList } from "../data/links";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 
 export const prerender = true;
 
-if (!siteConfig.featurePages.links) {
+if (!siteConfig.featurePages.resources) {
 	return Astro.redirect("/404/");
 }
 
@@ -23,7 +23,7 @@ if (!linksPost) {
 }
 
 const { Content } = await render(linksPost);
-const linksList = getShuffledlinksList();
+const linksList = getShuffledLinksList();
 const allTags = Array.from(new Set(linksList.flatMap((item) => item.tags)));
 ---
 
