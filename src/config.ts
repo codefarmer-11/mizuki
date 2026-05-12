@@ -320,7 +320,7 @@ export const navBarConfig: NavBarConfig = {
 			],
 		},
 		{
-			name: "About",
+			name: "SiteMenu",
 			url: "/content/",
 			icon: "material-symbols:info",
 			children: [

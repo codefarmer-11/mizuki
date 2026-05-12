@@ -18,6 +18,16 @@ enum I18nKey {
 	tableOfContents = "tableOfContents",
 	tocEmpty = "tocEmpty",
 
+	// 导航栏自定义分组与菜单项（与 navBarConfig 中 name 字段对应）
+	studyNotes = "studyNotes",
+	essay = "essay",
+	journal = "journal",
+	toolbox = "toolbox",
+	cookbook = "cookbook",
+	extensionComponent = "extensionComponent",
+	/** 顶栏中指向站务/内容聚合的父级菜单（原与「关于」页同名的分组） */
+	navSiteMenu = "navSiteMenu",
+
 	// 公告栏
 	announcement = "announcement",
 	announcementClose = "announcementClose",
