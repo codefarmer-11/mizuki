@@ -153,13 +153,29 @@ try {
 		.toString()
 		.trim();
 
-	// 3. 提交主仓库
+	// 3. 提交主仓库（CI 等环境常未配置 user.name，通过环境变量注入）
 	execSync("git add .", { cwd: rootDir });
 
-	execSync(
-		`git commit -m "chore(content): sync ${branch}@${hash}"`,
-		{ cwd: rootDir },
-	);
+	const authorName =
+		process.env.GIT_AUTHOR_NAME ||
+		process.env.GITHUB_ACTOR ||
+		"content-sync-bot";
+	const authorEmail =
+		process.env.GIT_AUTHOR_EMAIL ||
+		(process.env.GITHUB_ACTOR
+			? `${process.env.GITHUB_ACTOR}@users.noreply.github.com`
+			: "content-sync-bot@users.noreply.github.com");
+
+	execSync(`git commit -m "chore(content): sync ${branch}@${hash}"`, {
+		cwd: rootDir,
+		env: {
+			...process.env,
+			GIT_AUTHOR_NAME: authorName,
+			GIT_AUTHOR_EMAIL: authorEmail,
+			GIT_COMMITTER_NAME: process.env.GIT_COMMITTER_NAME || authorName,
+			GIT_COMMITTER_EMAIL: process.env.GIT_COMMITTER_EMAIL || authorEmail,
+		},
+	});
 
 	console.log(`已提交内容更新（${branch}@${hash}）`);
 } catch {

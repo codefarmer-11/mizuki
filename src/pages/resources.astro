@@ -1,13 +1,13 @@
 ---
 import Comment from "@components/comment/index.astro";
-import ResourceCard from "@components/features/resources/ResourceCard.astro";
+import LinkCard from "@components/features/links/LinkCard.astro";
 import { PageHeader } from "@components/features/page-header";
 import Markdown from "@components/misc/Markdown.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getEntry, render } from "astro:content";
 
 import { siteConfig } from "../config";
-import { getShuffledResourcesList } from "../data/resources";
+import { getShuffledLinksList } from "../data/links";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 
@@ -24,8 +24,8 @@ if (!resourcesPost) {
 }
 
 const { Content } = await render(resourcesPost);
-const resourcesList = getShuffledResourcesList();
-const allTags = Array.from(new Set(resourcesList.flatMap((item) => item.tags)));
+const linksList = getShuffledLinksList();
+const allTags = Array.from(new Set(linksList.flatMap((item) => item.tags)));
 ---
 
 <MainGridLayout
@@ -33,7 +33,7 @@ const allTags = Array.from(new Set(resourcesList.flatMap((item) => item.tags)));
 	description={i18n(I18nKey.resources)}
 >
 	<script is:inline>
-		window.isResourcesPage = true;
+		window.isLinksPage = true;
 	</script>
 	<script>
 		import("../scripts/right-sidebar-layout.js");
@@ -55,7 +55,7 @@ const allTags = Array.from(new Set(resourcesList.flatMap((item) => item.tags)));
 					<div class="relative">
 						<input
 							type="text"
-							id="resource-search"
+							id="link-search"
 							placeholder={i18n(I18nKey.resourcesSearchPlaceholder)}
 							class="w-full px-4 py-2 pl-10 rounded-lg bg-[var(--btn-regular-bg)]
 									text-black/90 dark:text-white/90
@@ -94,12 +94,12 @@ const allTags = Array.from(new Set(resourcesList.flatMap((item) => item.tags)));
 				</div>
 			</div>
 
-			<!-- 资源卡片网格 -->
+			<!-- 链接卡片网格（数据来自 data/links.ts，内容分离时由内容仓库提供） -->
 			<div
-				id="resources-grid"
+				id="links-grid"
 				class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6"
 			>
-				{resourcesList.map((item) => <ResourceCard resource={item} />)}
+				{linksList.map((item) => <LinkCard link={item} />)}
 			</div>
 
 			<!-- 无结果提示 -->
@@ -128,14 +128,14 @@ const allTags = Array.from(new Set(resourcesList.flatMap((item) => item.tags)));
 			</Markdown>
 
 			<!-- 隐藏元素用于传递 i18n 文本到全局脚本 -->
-			<div id="resources-copy-success-text" style="display: none;">
+			<div id="links-copy-success-text" style="display: none;">
 				{i18n(I18nKey.resourcesCopySuccess)}
 			</div>
 		</div>
 	</div>
 
 	<!-- 引用全局脚本 -->
-	<script is:inline src="/js/resources-page-handler.js"></script>
+	<script is:inline src="/js/links-page-handler.js"></script>
 
 	<div class="mt-4">
 		<Comment path="/resources/" />
@@ -144,7 +144,7 @@ const allTags = Array.from(new Set(resourcesList.flatMap((item) => item.tags)));
 
 <style>
 	/* 搜索框焦点效果 */
-	#resource-search:focus {
+	#link-search:focus {
 		box-shadow: 0 0 0 3px var(--primary) / 0.1;
 	}
 

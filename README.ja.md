@@ -275,7 +275,7 @@ export const siteConfig: SiteConfig = {
 ### 📱 機能ページの設定
 
 - **アニメページ：** `src/pages/anime.astro`でアニメリストを編集
-- **リソースページ：** `src/content/spec/resources.md`でページ文を編集し、`src/data/resources.ts`でリンクデータを編集
+- **リソースページ：** `src/content/spec/resources.md`でページ文を編集し、`src/data/links.ts`でリンクデータを編集（コンテンツ分離時はコンテンツリポジトリの`data/links.ts`）
 - **日記ページ：** `src/pages/diary.astro`で瞬間を編集
 - **アバウトページ：** `src/content/spec/about.md`でコンテンツを編集
 

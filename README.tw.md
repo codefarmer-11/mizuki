@@ -278,7 +278,7 @@ export const siteConfig: SiteConfig = {
 ### 📱 特色頁面配置
 
 - **追番頁面：** 在 `src/pages/anime.astro` 中編輯動畫列表
-- **資源頁面：** 在 `src/content/spec/resources.md` 中編輯頁面說明，在 `src/data/resources.ts` 中編輯連結資料
+- **資源頁面：** 在 `src/content/spec/resources.md` 中編輯頁面說明，在 `src/data/links.ts` 中編輯連結資料（內容分離時使用內容倉庫的 `data/links.ts`）
 - **日記頁面：** 在 `src/pages/diary.astro` 中編輯動態
 - **關於頁面：** 在 `src/content/spec/about.md` 中編輯內容
 

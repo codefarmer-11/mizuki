@@ -3,7 +3,7 @@ import I18nKey from "../../../i18n/i18nKey";
 import { i18n } from "../../../i18n/translation";
 
 interface Props {
-	resource: {
+	link: {
 		title: string;
 		siteurl: string;
 		imgurl: string;
@@ -12,25 +12,24 @@ interface Props {
 	};
 }
 
-const { resource } = Astro.props;
-const hostname = new URL(resource.siteurl).hostname;
+const { link } = Astro.props;
+const hostname = new URL(link.siteurl).hostname;
 ---
 
 <div
-	class="resource-card group relative bg-transparent rounded-xl border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-	data-title={resource.title.toLowerCase()}
-	data-desc={resource.desc.toLowerCase()}
-	data-tags={resource.tags.join(",")}
+	class="link-card group relative bg-transparent rounded-xl border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+	data-title={link.title.toLowerCase()}
+	data-desc={link.desc.toLowerCase()}
+	data-tags={link.tags.join(",")}
 >
 	<div class="p-6">
-		<!-- 头像和标题区 -->
 		<div class="flex items-start gap-4 mb-4">
 			<div
 				class="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-[var(--btn-regular-bg)] ring-2 ring-transparent transition-all duration-300"
 			>
 				<img
-					src={resource.imgurl}
-					alt={resource.title}
+					src={link.imgurl}
+					alt={link.title}
 					class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
 					loading="lazy"
 				/>
@@ -40,10 +39,10 @@ const hostname = new URL(resource.siteurl).hostname;
 				<h3
 					class="text-xl font-bold text-black/90 dark:text-white/90 mb-1 truncate group-hover:text-[var(--primary)] transition-colors duration-200"
 				>
-					{resource.title}
+					{link.title}
 				</h3>
 				<a
-					href={resource.siteurl}
+					href={link.siteurl}
 					target="_blank"
 					rel="noopener noreferrer"
 					class="text-xs text-black/50 dark:text-white/50 hover:text-[var(--primary)] truncate block transition-colors duration-200"
@@ -53,17 +52,15 @@ const hostname = new URL(resource.siteurl).hostname;
 			</div>
 		</div>
 
-		<!-- 描述 -->
 		<p
 			class="text-sm text-black/60 dark:text-white/60 mb-4 line-clamp-2 min-h-[2.5rem]"
 		>
-			{resource.desc}
+			{link.desc}
 		</p>
 
-		<!-- 标签 -->
 		<div class="flex flex-wrap gap-2 mb-4">
 			{
-				resource.tags.map((tag) => (
+				link.tags.map((tag) => (
 					<span class="px-2 py-1 text-xs rounded-md bg-[var(--primary)]/10 text-[var(--primary)] font-medium">
 						{tag}
 					</span>
@@ -71,10 +68,9 @@ const hostname = new URL(resource.siteurl).hostname;
 			}
 		</div>
 
-		<!-- 操作按钮 -->
 		<div class="flex gap-2">
 			<a
-				href={resource.siteurl}
+				href={link.siteurl}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary)]/90 active:scale-95 transition-all duration-200 font-medium text-sm"
@@ -96,7 +92,7 @@ const hostname = new URL(resource.siteurl).hostname;
 			</a>
 			<button
 				class="copy-link-btn px-3 py-2 rounded-lg bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:scale-95 transition-all duration-200 text-black/70 dark:text-white/70"
-				data-url={resource.siteurl}
+				data-url={link.siteurl}
 				title={i18n(I18nKey.resourcesCopyLink)}
 			>
 				<svg
@@ -116,7 +112,6 @@ const hostname = new URL(resource.siteurl).hostname;
 		</div>
 	</div>
 
-	<!-- 悬停装饰效果 -->
 	<div
 		class="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
 	>
@@ -124,7 +119,7 @@ const hostname = new URL(resource.siteurl).hostname;
 </div>
 
 <style>
-	.resource-card {
+	.link-card {
 		animation: fadeInUp 0.5s ease-out forwards;
 		opacity: 0;
 	}
@@ -140,22 +135,22 @@ const hostname = new URL(resource.siteurl).hostname;
 		}
 	}
 
-	.resource-card:nth-child(1) {
+	.link-card:nth-child(1) {
 		animation-delay: 0.05s;
 	}
-	.resource-card:nth-child(2) {
+	.link-card:nth-child(2) {
 		animation-delay: 0.1s;
 	}
-	.resource-card:nth-child(3) {
+	.link-card:nth-child(3) {
 		animation-delay: 0.15s;
 	}
-	.resource-card:nth-child(4) {
+	.link-card:nth-child(4) {
 		animation-delay: 0.2s;
 	}
-	.resource-card:nth-child(5) {
+	.link-card:nth-child(5) {
 		animation-delay: 0.25s;
 	}
-	.resource-card:nth-child(6) {
+	.link-card:nth-child(6) {
 		animation-delay: 0.3s;
 	}
 </style>

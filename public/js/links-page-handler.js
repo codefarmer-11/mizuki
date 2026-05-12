@@ -1,64 +1,54 @@
-// 资源展示页面处理脚本
-// 此脚本作为全局脚本加载，不受 Swup 页面切换影响
+// 资源页链接列表（LinkCard）交互脚本；全局加载，兼容 Swup
 
 (() => {
-	console.log("[Resources Global] Script loaded");
+	console.log("[Links Global] Script loaded");
 
-	// 使用全局变量存储状态
-	if (typeof window.resourcesPageState === "undefined") {
-		window.resourcesPageState = {
+	if (typeof window.linksPageState === "undefined") {
+		window.linksPageState = {
 			initialized: false,
 			eventListeners: [],
 			mutationObserver: null,
-			copySuccessText: "已复制", // 默认值，会被页面覆盖
+			copySuccessText: "已复制",
 		};
 	}
 
-	// 初始化函数
-	function initResourcesPage() {
-		console.log("[Resources Global] initResourcesPage called");
+	function initLinksPage() {
+		console.log("[Links Global] initLinksPage called");
 
-		var searchInput = document.getElementById("resource-search");
-		var resourcesGrid = document.getElementById("resources-grid");
+		var searchInput = document.getElementById("link-search");
+		var linksGrid = document.getElementById("links-grid");
 		var noResults = document.getElementById("no-results");
 
-		// 如果关键元素不存在，直接返回
-		if (!searchInput || !resourcesGrid || !noResults) {
+		if (!searchInput || !linksGrid || !noResults) {
 			return false;
 		}
 
 		var tagFilters = document.querySelectorAll(".filter-tag");
-		var resourceCards = document.querySelectorAll(".resource-card");
+		var linkCards = document.querySelectorAll(".link-card");
 		var copyButtons = document.querySelectorAll(".copy-link-btn");
 
-		console.log("[Resources Global] Found elements:", {
-			cards: resourceCards.length,
+		console.log("[Links Global] Found elements:", {
+			cards: linkCards.length,
 			filters: tagFilters.length,
 			copyButtons: copyButtons.length,
 		});
 
-		// 从页面获取复制成功文本
 		var copySuccessTextElement = document.getElementById(
-			"resources-copy-success-text",
+			"links-copy-success-text",
 		);
 		if (copySuccessTextElement) {
-			window.resourcesPageState.copySuccessText =
+			window.linksPageState.copySuccessText =
 				copySuccessTextElement.textContent;
 		}
 
-		// 清理旧的事件监听器
-		if (window.resourcesPageState.eventListeners.length > 0) {
+		if (window.linksPageState.eventListeners.length > 0) {
 			console.log(
-				"[Resources Global] Cleaning",
-				window.resourcesPageState.eventListeners.length,
+				"[Links Global] Cleaning",
+				window.linksPageState.eventListeners.length,
 				"old listeners",
 			);
-			for (
-				var i = 0;
-				i < window.resourcesPageState.eventListeners.length;
-				i++
-			) {
-				var listener = window.resourcesPageState.eventListeners[i];
+			for (var i = 0; i < window.linksPageState.eventListeners.length; i++) {
+				var listener = window.linksPageState.eventListeners[i];
 				var element = listener[0];
 				var type = listener[1];
 				var handler = listener[2];
@@ -66,17 +56,16 @@
 					element.removeEventListener(type, handler);
 				}
 			}
-			window.resourcesPageState.eventListeners = [];
+			window.linksPageState.eventListeners = [];
 		}
 
 		var currentTag = "all";
 		var searchTerm = "";
 
-		// 过滤函数
-		function filterResources() {
+		function filterLinks() {
 			var visibleCount = 0;
-			for (var i = 0; i < resourceCards.length; i++) {
-				var card = resourceCards[i];
+			for (var i = 0; i < linkCards.length; i++) {
+				var card = linkCards[i];
 				var title = (card.getAttribute("data-title") || "").toLowerCase();
 				var desc = (card.getAttribute("data-desc") || "").toLowerCase();
 				var tags = card.getAttribute("data-tags") || "";
@@ -98,41 +87,36 @@
 
 			if (visibleCount === 0) {
 				noResults.classList.remove("hidden");
-				resourcesGrid.classList.add("hidden");
+				linksGrid.classList.add("hidden");
 			} else {
 				noResults.classList.add("hidden");
-				resourcesGrid.classList.remove("hidden");
+				linksGrid.classList.remove("hidden");
 			}
 		}
 
-		// 搜索功能
 		var searchHandler = (e) => {
 			searchTerm = e.target.value.toLowerCase();
-			filterResources();
+			filterLinks();
 		};
 		searchInput.addEventListener("input", searchHandler);
-		window.resourcesPageState.eventListeners.push([
+		window.linksPageState.eventListeners.push([
 			searchInput,
 			"input",
 			searchHandler,
 		]);
 
-		// 标签筛选
 		for (var i = 0; i < tagFilters.length; i++) {
 			((button) => {
 				var clickHandler = () => {
-					// 更新选中状态
 					for (var j = 0; j < tagFilters.length; j++) {
-						var btn = tagFilters[j];
-						btn.classList.remove("active");
+						tagFilters[j].classList.remove("active");
 					}
 					button.classList.add("active");
-
 					currentTag = button.getAttribute("data-tag") || "all";
-					filterResources();
+					filterLinks();
 				};
 				button.addEventListener("click", clickHandler);
-				window.resourcesPageState.eventListeners.push([
+				window.linksPageState.eventListeners.push([
 					button,
 					"click",
 					clickHandler,
@@ -140,7 +124,6 @@
 			})(tagFilters[i]);
 		}
 
-		// 复制链接功能
 		for (var i = 0; i < copyButtons.length; i++) {
 			((button) => {
 				var clickHandler = () => {
@@ -154,7 +137,7 @@
 								var originalHTML = button.innerHTML;
 								button.innerHTML =
 									'<div class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span class="text-xs">' +
-									window.resourcesPageState.copySuccessText +
+									window.linksPageState.copySuccessText +
 									"</span></div>";
 								button.classList.add("text-green-500");
 								setTimeout(() => {
@@ -163,12 +146,12 @@
 								}, 2000);
 							})
 							.catch((err) => {
-								console.error("[Resources Global] Copy failed:", err);
+								console.error("[Links Global] Copy failed:", err);
 							});
 					}
 				};
 				button.addEventListener("click", clickHandler);
-				window.resourcesPageState.eventListeners.push([
+				window.linksPageState.eventListeners.push([
 					button,
 					"click",
 					clickHandler,
@@ -176,20 +159,19 @@
 			})(copyButtons[i]);
 		}
 
-		window.resourcesPageState.initialized = true;
+		window.linksPageState.initialized = true;
 		console.log(
-			"[Resources Global] ✅ Initialization complete with",
-			window.resourcesPageState.eventListeners.length,
+			"[Links Global] ✅ Initialization complete with",
+			window.linksPageState.eventListeners.length,
 			"listeners",
 		);
 		return true;
 	}
 
-	// 带重试的初始化
 	function tryInit(retries) {
 		retries = retries || 0;
-		if (initResourcesPage()) {
-			console.log("[Resources Global] Init succeeded");
+		if (initLinksPage()) {
+			console.log("[Links Global] Init succeeded");
 			return;
 		}
 		if (retries < 5) {
@@ -199,13 +181,12 @@
 		}
 	}
 
-	// MutationObserver 监听 DOM 变化
 	function setupMutationObserver() {
-		if (window.resourcesPageState.mutationObserver) {
-			window.resourcesPageState.mutationObserver.disconnect();
+		if (window.linksPageState.mutationObserver) {
+			window.linksPageState.mutationObserver.disconnect();
 		}
 
-		window.resourcesPageState.mutationObserver = new MutationObserver(
+		window.linksPageState.mutationObserver = new MutationObserver(
 			(mutations) => {
 				var shouldInit = false;
 				for (var i = 0; i < mutations.length; i++) {
@@ -215,10 +196,9 @@
 							var node = mutation.addedNodes[j];
 							if (node.nodeType === 1) {
 								if (
-									node.id === "resources-grid" ||
-									node.id === "resource-search" ||
-									(node.querySelector &&
-										node.querySelector("#resources-grid"))
+									node.id === "links-grid" ||
+									node.id === "link-search" ||
+									(node.querySelector && node.querySelector("#links-grid"))
 								) {
 									shouldInit = true;
 									break;
@@ -230,8 +210,8 @@
 				}
 
 				if (shouldInit) {
-					console.log("[Resources Global] DOM mutation detected");
-					window.resourcesPageState.initialized = false;
+					console.log("[Links Global] DOM mutation detected");
+					window.linksPageState.initialized = false;
 					setTimeout(() => {
 						tryInit();
 					}, 50);
@@ -239,26 +219,23 @@
 			},
 		);
 
-		window.resourcesPageState.mutationObserver.observe(document.body, {
+		window.linksPageState.mutationObserver.observe(document.body, {
 			childList: true,
 			subtree: true,
 		});
 	}
 
-	// 页面加载时初始化
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", () => {
-			console.log("[Resources Global] DOMContentLoaded");
+			console.log("[Links Global] DOMContentLoaded");
 			tryInit();
 		});
 	} else {
 		tryInit();
 	}
 
-	// 启动 MutationObserver
 	setupMutationObserver();
 
-	// 监听所有可能的页面切换事件
 	var events = [
 		"swup:contentReplaced",
 		"swup:pageView",
@@ -269,8 +246,8 @@
 	for (var i = 0; i < events.length; i++) {
 		((eventName) => {
 			document.addEventListener(eventName, () => {
-				console.log("[Resources Global] Event:", eventName);
-				window.resourcesPageState.initialized = false;
+				console.log("[Links Global] Event:", eventName);
+				window.linksPageState.initialized = false;
 				setTimeout(() => {
 					tryInit();
 				}, 100);
@@ -278,5 +255,5 @@
 		})(events[i]);
 	}
 
-	console.log("[Resources Global] All listeners registered");
+	console.log("[Links Global] All listeners registered");
 })();

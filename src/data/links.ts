@@ -1,7 +1,7 @@
-// 资源链接数据配置
-// 用于管理资源展示页面的数据
+// 资源页链接数据（内容分离时由 content 仓库的 data/links.ts 通过符号链接覆盖）
+// 对外约定：LinkItem 字段与下列一致，并实现 getShuffledLinksList
 
-export interface ResourceItem {
+export interface LinkItem {
 	id: number;
 	title: string;
 	imgurl: string;
@@ -10,8 +10,7 @@ export interface ResourceItem {
 	tags: string[];
 }
 
-// 资源链接数据
-export const resourcesData: ResourceItem[] = [
+export const linksData: LinkItem[] = [
 	{
 		id: 1,
 		title: "Astro",
@@ -78,14 +77,12 @@ export const resourcesData: ResourceItem[] = [
 	},
 ];
 
-// 获取所有资源链接数据
-export function getResourcesList(): ResourceItem[] {
-	return resourcesData;
+export function getLinksList(): LinkItem[] {
+	return linksData;
 }
 
-// 获取随机排序的资源链接数据
-export function getShuffledResourcesList(): ResourceItem[] {
-	const shuffled = [...resourcesData];
+export function getShuffledLinksList(): LinkItem[] {
+	const shuffled = [...linksData];
 	for (let i = shuffled.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];

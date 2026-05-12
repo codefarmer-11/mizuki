@@ -276,7 +276,7 @@ export const siteConfig: SiteConfig = {
 ### 📱 Feature Page Configuration
 
 - **Anime Page:** Edit anime list in `src/pages/anime.astro`
-- **Resources Page:** Edit page copy in `src/content/spec/resources.md` and link data in `src/data/resources.ts`
+- **Resources Page:** Edit page copy in `src/content/spec/resources.md` and link data in `src/data/links.ts` (or `data/links.ts` in your content repo when using content sync)
 - **Diary Page:** Edit moments in `src/pages/diary.astro`
 - **About Page:** Edit content in `src/content/spec/about.md`
 
