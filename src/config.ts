@@ -314,7 +314,7 @@ export const navBarConfig: NavBarConfig = {
 				},
 				{
 					name: "ExtensionComponent",
-					url: "/extension",
+					url: "/extension/",
 					icon: "material-symbols:extension",
 				},
 			],
