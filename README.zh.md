@@ -91,7 +91,7 @@
 
 ### 📱 特色页面
 - [x] **追番页面** - 追踪动画观看进度和评分
-- [x] **友链页面** - 精美卡片展示朋友网站
+- [x] **资源页面** - 精美卡片展示链接与站点
 - [x] **日记页面** - 分享生活瞬间，类似社交媒体
 - [x] **归档页面** - 有序的文章时间线视图
 - [x] **关于页面** - 可自定义的个人介绍
@@ -278,7 +278,7 @@ export const siteConfig: SiteConfig = {
 ### 📱 特色页面配置
 
 - **追番页面：** 在 `src/pages/anime.astro` 中编辑动画列表
-- **友链页面：** 在 `src/content/spec/friends.md` 中编辑朋友数据
+- **资源页面：** 在 `src/content/spec/resources.md` 中编辑页面说明，在 `src/data/resources.ts` 中编辑链接数据
 - **日记页面：** 在 `src/pages/diary.astro` 中编辑动态
 - **关于页面：** 在 `src/content/spec/about.md` 中编辑内容
 

@@ -24,7 +24,7 @@ This website is built with the **Astro** framework using the [Mizuki](https://gi
 
 ### 📱 Special Pages
 - **Anime Tracking Page** - Track your anime watching progress with ratings
-- **Friends Links Page** - Showcase friend websites with beautiful cards
+- **Resources Page** - Showcase curated links with beautiful cards
 - **Diary/Moments Page** - Share life moments like social media posts
 - **Archive Page** - Organized timeline view of all posts
 - **About Page** - Customizable personal introduction (this page!)

@@ -1,7 +1,7 @@
-// 友情链接数据配置
-// 用于管理友情链接页面的数据
+// 资源链接数据配置
+// 用于管理资源展示页面的数据
 
-export interface FriendItem {
+export interface ResourceItem {
 	id: number;
 	title: string;
 	imgurl: string;
@@ -10,8 +10,8 @@ export interface FriendItem {
 	tags: string[];
 }
 
-// 友情链接数据
-export const friendsData: FriendItem[] = [
+// 资源链接数据
+export const resourcesData: ResourceItem[] = [
 	{
 		id: 1,
 		title: "Astro",
@@ -78,14 +78,14 @@ export const friendsData: FriendItem[] = [
 	},
 ];
 
-// 获取所有友情链接数据
-export function getFriendsList(): FriendItem[] {
-	return friendsData;
+// 获取所有资源链接数据
+export function getResourcesList(): ResourceItem[] {
+	return resourcesData;
 }
 
-// 获取随机排序的友情链接数据
-export function getShuffledFriendsList(): FriendItem[] {
-	const shuffled = [...friendsData];
+// 获取随机排序的资源链接数据
+export function getShuffledResourcesList(): ResourceItem[] {
+	const shuffled = [...resourcesData];
 	for (let i = shuffled.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];

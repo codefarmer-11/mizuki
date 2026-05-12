@@ -92,7 +92,7 @@
 
 ### 📱 特色頁面
 - [x] **追番頁面** - 追蹤動畫觀看進度和評分
-- [x] **友鏈頁面** - 精美卡片展示朋友網站
+- [x] **資源頁面** - 精美卡片展示連結與網站
 - [x] **日記頁面** - 分享生活瞬間，類似社交媒體
 - [x] **歸檔頁面** - 有序的文章時間線視圖
 - [x] **關於頁面** - 可自定義的個人介紹
@@ -278,7 +278,7 @@ export const siteConfig: SiteConfig = {
 ### 📱 特色頁面配置
 
 - **追番頁面：** 在 `src/pages/anime.astro` 中編輯動畫列表
-- **友鏈頁面：** 在 `src/content/spec/friends.md` 中編輯朋友數據
+- **資源頁面：** 在 `src/content/spec/resources.md` 中編輯頁面說明，在 `src/data/resources.ts` 中編輯連結資料
 - **日記頁面：** 在 `src/pages/diary.astro` 中編輯動態
 - **關於頁面：** 在 `src/content/spec/about.md` 中編輯內容
 

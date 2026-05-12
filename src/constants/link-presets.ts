@@ -19,10 +19,10 @@ export const LinkPresets: Record<LinkPreset, NavBarLink> = {
 		url: "/archive/",
 		icon: "material-symbols:archive",
 	},
-	[LinkPreset.Friends]: {
-		name: i18n(I18nKey.friends),
-		url: "/friends/",
-		icon: "material-symbols:group",
+	[LinkPreset.Resource]: {
+		name: i18n(I18nKey.resources),
+		url: "/resources/",
+		icon: "material-symbols:stacks",
 	},
 	[LinkPreset.Anime]: {
 		name: i18n(I18nKey.anime),

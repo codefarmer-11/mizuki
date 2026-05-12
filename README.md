@@ -90,7 +90,7 @@ Get started quickly with our comprehensive documentation. Whether you're customi
 
 ### 📱 Special Pages
 - [x] **Anime Tracking Page** - Track anime watching progress and ratings
-- [x] **Friends Page** - Beautiful cards showcasing friend websites
+- [x] **Resources Page** - Beautiful cards showcasing curated links
 - [x] **Diary Page** - Share life moments, similar to social media
 - [x] **Archive Page** - Organized timeline view of articles
 - [x] **About Page** - Customizable personal introduction
@@ -276,7 +276,7 @@ export const siteConfig: SiteConfig = {
 ### 📱 Feature Page Configuration
 
 - **Anime Page:** Edit anime list in `src/pages/anime.astro`
-- **Friends Page:** Edit friend data in `src/content/spec/friends.md`
+- **Resources Page:** Edit page copy in `src/content/spec/resources.md` and link data in `src/data/resources.ts`
 - **Diary Page:** Edit moments in `src/pages/diary.astro`
 - **About Page:** Edit content in `src/content/spec/about.md`
 

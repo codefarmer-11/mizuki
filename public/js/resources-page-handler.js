@@ -1,12 +1,12 @@
-// 友情链接页面处理脚本
+// 资源展示页面处理脚本
 // 此脚本作为全局脚本加载，不受 Swup 页面切换影响
 
 (() => {
-	console.log("[Friends Global] Script loaded");
+	console.log("[Resources Global] Script loaded");
 
 	// 使用全局变量存储状态
-	if (typeof window.friendsPageState === "undefined") {
-		window.friendsPageState = {
+	if (typeof window.resourcesPageState === "undefined") {
+		window.resourcesPageState = {
 			initialized: false,
 			eventListeners: [],
 			mutationObserver: null,
@@ -15,46 +15,50 @@
 	}
 
 	// 初始化函数
-	function initFriendsPage() {
-		console.log("[Friends Global] initFriendsPage called");
+	function initResourcesPage() {
+		console.log("[Resources Global] initResourcesPage called");
 
-		var searchInput = document.getElementById("friend-search");
-		var friendsGrid = document.getElementById("friends-grid");
+		var searchInput = document.getElementById("resource-search");
+		var resourcesGrid = document.getElementById("resources-grid");
 		var noResults = document.getElementById("no-results");
 
 		// 如果关键元素不存在，直接返回
-		if (!searchInput || !friendsGrid || !noResults) {
+		if (!searchInput || !resourcesGrid || !noResults) {
 			return false;
 		}
 
 		var tagFilters = document.querySelectorAll(".filter-tag");
-		var friendCards = document.querySelectorAll(".friend-card");
+		var resourceCards = document.querySelectorAll(".resource-card");
 		var copyButtons = document.querySelectorAll(".copy-link-btn");
 
-		console.log("[Friends Global] Found elements:", {
-			cards: friendCards.length,
+		console.log("[Resources Global] Found elements:", {
+			cards: resourceCards.length,
 			filters: tagFilters.length,
 			copyButtons: copyButtons.length,
 		});
 
 		// 从页面获取复制成功文本
 		var copySuccessTextElement = document.getElementById(
-			"friends-copy-success-text",
+			"resources-copy-success-text",
 		);
 		if (copySuccessTextElement) {
-			window.friendsPageState.copySuccessText =
+			window.resourcesPageState.copySuccessText =
 				copySuccessTextElement.textContent;
 		}
 
 		// 清理旧的事件监听器
-		if (window.friendsPageState.eventListeners.length > 0) {
+		if (window.resourcesPageState.eventListeners.length > 0) {
 			console.log(
-				"[Friends Global] Cleaning",
-				window.friendsPageState.eventListeners.length,
+				"[Resources Global] Cleaning",
+				window.resourcesPageState.eventListeners.length,
 				"old listeners",
 			);
-			for (var i = 0; i < window.friendsPageState.eventListeners.length; i++) {
-				var listener = window.friendsPageState.eventListeners[i];
+			for (
+				var i = 0;
+				i < window.resourcesPageState.eventListeners.length;
+				i++
+			) {
+				var listener = window.resourcesPageState.eventListeners[i];
 				var element = listener[0];
 				var type = listener[1];
 				var handler = listener[2];
@@ -62,17 +66,17 @@
 					element.removeEventListener(type, handler);
 				}
 			}
-			window.friendsPageState.eventListeners = [];
+			window.resourcesPageState.eventListeners = [];
 		}
 
 		var currentTag = "all";
 		var searchTerm = "";
 
 		// 过滤函数
-		function filterFriends() {
+		function filterResources() {
 			var visibleCount = 0;
-			for (var i = 0; i < friendCards.length; i++) {
-				var card = friendCards[i];
+			for (var i = 0; i < resourceCards.length; i++) {
+				var card = resourceCards[i];
 				var title = (card.getAttribute("data-title") || "").toLowerCase();
 				var desc = (card.getAttribute("data-desc") || "").toLowerCase();
 				var tags = card.getAttribute("data-tags") || "";
@@ -94,20 +98,20 @@
 
 			if (visibleCount === 0) {
 				noResults.classList.remove("hidden");
-				friendsGrid.classList.add("hidden");
+				resourcesGrid.classList.add("hidden");
 			} else {
 				noResults.classList.add("hidden");
-				friendsGrid.classList.remove("hidden");
+				resourcesGrid.classList.remove("hidden");
 			}
 		}
 
 		// 搜索功能
 		var searchHandler = (e) => {
 			searchTerm = e.target.value.toLowerCase();
-			filterFriends();
+			filterResources();
 		};
 		searchInput.addEventListener("input", searchHandler);
-		window.friendsPageState.eventListeners.push([
+		window.resourcesPageState.eventListeners.push([
 			searchInput,
 			"input",
 			searchHandler,
@@ -125,10 +129,10 @@
 					button.classList.add("active");
 
 					currentTag = button.getAttribute("data-tag") || "all";
-					filterFriends();
+					filterResources();
 				};
 				button.addEventListener("click", clickHandler);
-				window.friendsPageState.eventListeners.push([
+				window.resourcesPageState.eventListeners.push([
 					button,
 					"click",
 					clickHandler,
@@ -150,7 +154,7 @@
 								var originalHTML = button.innerHTML;
 								button.innerHTML =
 									'<div class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span class="text-xs">' +
-									window.friendsPageState.copySuccessText +
+									window.resourcesPageState.copySuccessText +
 									"</span></div>";
 								button.classList.add("text-green-500");
 								setTimeout(() => {
@@ -159,12 +163,12 @@
 								}, 2000);
 							})
 							.catch((err) => {
-								console.error("[Friends Global] Copy failed:", err);
+								console.error("[Resources Global] Copy failed:", err);
 							});
 					}
 				};
 				button.addEventListener("click", clickHandler);
-				window.friendsPageState.eventListeners.push([
+				window.resourcesPageState.eventListeners.push([
 					button,
 					"click",
 					clickHandler,
@@ -172,10 +176,10 @@
 			})(copyButtons[i]);
 		}
 
-		window.friendsPageState.initialized = true;
+		window.resourcesPageState.initialized = true;
 		console.log(
-			"[Friends Global] ✅ Initialization complete with",
-			window.friendsPageState.eventListeners.length,
+			"[Resources Global] ✅ Initialization complete with",
+			window.resourcesPageState.eventListeners.length,
 			"listeners",
 		);
 		return true;
@@ -184,8 +188,8 @@
 	// 带重试的初始化
 	function tryInit(retries) {
 		retries = retries || 0;
-		if (initFriendsPage()) {
-			console.log("[Friends Global] Init succeeded");
+		if (initResourcesPage()) {
+			console.log("[Resources Global] Init succeeded");
 			return;
 		}
 		if (retries < 5) {
@@ -197,11 +201,11 @@
 
 	// MutationObserver 监听 DOM 变化
 	function setupMutationObserver() {
-		if (window.friendsPageState.mutationObserver) {
-			window.friendsPageState.mutationObserver.disconnect();
+		if (window.resourcesPageState.mutationObserver) {
+			window.resourcesPageState.mutationObserver.disconnect();
 		}
 
-		window.friendsPageState.mutationObserver = new MutationObserver(
+		window.resourcesPageState.mutationObserver = new MutationObserver(
 			(mutations) => {
 				var shouldInit = false;
 				for (var i = 0; i < mutations.length; i++) {
@@ -211,9 +215,10 @@
 							var node = mutation.addedNodes[j];
 							if (node.nodeType === 1) {
 								if (
-									node.id === "friends-grid" ||
-									node.id === "friend-search" ||
-									(node.querySelector && node.querySelector("#friends-grid"))
+									node.id === "resources-grid" ||
+									node.id === "resource-search" ||
+									(node.querySelector &&
+										node.querySelector("#resources-grid"))
 								) {
 									shouldInit = true;
 									break;
@@ -225,8 +230,8 @@
 				}
 
 				if (shouldInit) {
-					console.log("[Friends Global] DOM mutation detected");
-					window.friendsPageState.initialized = false;
+					console.log("[Resources Global] DOM mutation detected");
+					window.resourcesPageState.initialized = false;
 					setTimeout(() => {
 						tryInit();
 					}, 50);
@@ -234,7 +239,7 @@
 			},
 		);
 
-		window.friendsPageState.mutationObserver.observe(document.body, {
+		window.resourcesPageState.mutationObserver.observe(document.body, {
 			childList: true,
 			subtree: true,
 		});
@@ -243,7 +248,7 @@
 	// 页面加载时初始化
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", () => {
-			console.log("[Friends Global] DOMContentLoaded");
+			console.log("[Resources Global] DOMContentLoaded");
 			tryInit();
 		});
 	} else {
@@ -264,8 +269,8 @@
 	for (var i = 0; i < events.length; i++) {
 		((eventName) => {
 			document.addEventListener(eventName, () => {
-				console.log("[Friends Global] Event:", eventName);
-				window.friendsPageState.initialized = false;
+				console.log("[Resources Global] Event:", eventName);
+				window.resourcesPageState.initialized = false;
 				setTimeout(() => {
 					tryInit();
 				}, 100);
@@ -273,5 +278,5 @@
 		})(events[i]);
 	}
 
-	console.log("[Friends Global] All listeners registered");
+	console.log("[Resources Global] All listeners registered");
 })();
