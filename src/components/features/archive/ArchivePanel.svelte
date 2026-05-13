@@ -49,8 +49,12 @@
 		return tagList.map((t) => `#${t}`).join(" ");
 	}
 
-	onMount(async () => {
-		const normalized: Post[] = sortedPosts.map((post) => ({
+	function buildArchiveGroups(
+		postsInput: Post[],
+		searchParams: URLSearchParams,
+		useUrlFilters: boolean,
+	): Group[] {
+		const normalized: Post[] = postsInput.map((post) => ({
 			...post,
 			data: {
 				...post.data,
@@ -61,13 +65,12 @@
 		let urlTags: string[] = [];
 		let urlCategories: string[] = [];
 		let uncategorized: string | null = null;
-		if (applyUrlQueryFilters) {
-			const params = new URLSearchParams(window.location.search);
-			urlTags = params.has("tag") ? params.getAll("tag") : [];
-			urlCategories = params.has("category")
-				? params.getAll("category")
+		if (useUrlFilters) {
+			urlTags = searchParams.has("tag") ? searchParams.getAll("tag") : [];
+			urlCategories = searchParams.has("category")
+				? searchParams.getAll("category")
 				: [];
-			uncategorized = params.get("uncategorized");
+			uncategorized = searchParams.get("uncategorized");
 		}
 
 		let filteredPosts: Post[] = normalized;
@@ -119,7 +122,21 @@
 
 		groupedPostsArray.sort((a, b) => b.year - a.year);
 
-		groups = groupedPostsArray;
+		return groupedPostsArray;
+	}
+
+	$: if (!applyUrlQueryFilters) {
+		groups = buildArchiveGroups(sortedPosts, new URLSearchParams(), false);
+	}
+
+	onMount(() => {
+		if (applyUrlQueryFilters) {
+			groups = buildArchiveGroups(
+				sortedPosts,
+				new URLSearchParams(window.location.search),
+				true,
+			);
+		}
 	});
 </script>
 

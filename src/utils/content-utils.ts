@@ -46,7 +46,21 @@ async function getRawSortedPosts() {
 export function postIdMatchesSection(id: string, section: string): boolean {
 	const nid = id.replace(/\\/g, "/");
 	const nsec = section.replace(/\\/g, "/");
-	return nid === nsec || nid.startsWith(`${nsec}/`);
+	if (nid === nsec || nid.startsWith(`${nsec}/`)) {
+		return true;
+	}
+	// 与 Git/Windows 大小写漂移兼容：逐段比较（仍要求段数与顺序一致）
+	const idParts = nid.split("/").filter(Boolean);
+	const secParts = nsec.split("/").filter(Boolean);
+	if (secParts.length === 0 || idParts.length < secParts.length) {
+		return false;
+	}
+	for (let i = 0; i < secParts.length; i++) {
+		if (idParts[i].toLowerCase() !== secParts[i].toLowerCase()) {
+			return false;
+		}
+	}
+	return idParts.length > secParts.length || idParts.length === secParts.length;
 }
 
 /** 与全站排序规则一致，但只保留 id 以 `section/`（或等于 `section`）开头的文章，并预计算 URL */
