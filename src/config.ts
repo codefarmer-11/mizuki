@@ -57,9 +57,9 @@ export const siteConfig: SiteConfig = {
 		// 顶栏标题文本
 		text: "MoonL",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.webp
-		icon: "assets/home/home.webp",
+		icon: "assets/home/Moon.webp",
 		// 网站Logo图片路径
-		logo: "assets/home/home.webp",
+		logo: "assets/home/Moon.webp",
 	},
 
 	// 页面自动缩放配置
@@ -171,8 +171,7 @@ export const siteConfig: SiteConfig = {
 			subtitle: [
 				"特別なことはないけど、君がいると十分です",
 				"今でもあなたは私の光",
-				"君ってさ、知らないうちに私の毎日になってたよ",
-				"君と話すと、なんか毎日がちょっと楽しくなるんだ"
+				"君ってさ、知らないうちに私の毎日になってたよ"
 			],
 			typewriter: {
 				enable: true, // 启用副标题打字机效果
