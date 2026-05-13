@@ -59,11 +59,15 @@ if (!fs.existsSync(CONTENT_DIR)) {
 		try {
 			console.log("正在同步远程内容（强制模式）...");
 
-			// 1. 防止本地修改丢失
-			execSync("git stash push --include-untracked -m 'auto-sync'", {
-				stdio: "inherit",
-				cwd: CONTENT_DIR,
-			});
+			// 1. 防止本地修改丢失（干净工作树时 git stash 会失败，不能阻断后续 fetch）
+			try {
+				execSync("git stash push --include-untracked -m 'auto-sync'", {
+					stdio: "inherit",
+					cwd: CONTENT_DIR,
+				});
+			} catch {
+				console.log("（无本地更改，跳过 git stash）");
+			}
 
 			// 2. 更新远程引用
 			execSync("git fetch --all --prune", {
@@ -80,10 +84,10 @@ if (!fs.existsSync(CONTENT_DIR)) {
 			}
 
 			// 4. 强制同步
-		execSync(`git checkout ${branch}`, { cwd: CONTENT_DIR });
-		execSync(`git reset --hard origin/${branch}`, { cwd: CONTENT_DIR });
+			execSync(`git checkout ${branch}`, { cwd: CONTENT_DIR });
+			execSync(`git reset --hard origin/${branch}`, { cwd: CONTENT_DIR });
 
-		console.log(`内容同步成功（分支：${branch}）`);
+			console.log(`内容同步成功（分支：${branch}）`);
 		} catch (error) {
 			console.warn("内容更新失败：", error.message);
 		}
@@ -126,10 +130,11 @@ for (const mapping of contentMappings) {
 		fs.unlinkSync(destPath);
 	}
 
-	// 创建符号链接 (Windows 需要管理员权限,否则复制文件)
+	// 创建符号链接 (Windows 目录用 junction；POSIX 用 dir，避免部分环境下 junction 异常)
 	try {
 		const relPath = path.relative(path.dirname(destPath), srcPath);
-		fs.symlinkSync(relPath, destPath, "junction");
+		const linkType = process.platform === "win32" ? "junction" : "dir";
+		fs.symlinkSync(relPath, destPath, linkType);
 		console.log(`已创建符号链接：${mapping.dest} -> ${mapping.src}`);
 	} catch (error) {
 		console.log(`符号链接失败，改为复制内容：${mapping.src} -> ${mapping.dest}`);
