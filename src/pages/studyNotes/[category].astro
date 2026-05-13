@@ -7,22 +7,34 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPostsListByIdPrefix } from "@utils/content-utils";
-import { getStudyNotesCategorySlugs } from "@utils/study-notes-utils";
+import {
+	getStudyNotesCategoryPathParams,
+	getStudyNotesCategorySlugs,
+	resolveStudyNotesCategorySlug,
+} from "@utils/study-notes-utils";
 import { url } from "@utils/url-utils";
 import { siteConfig } from "../../config";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-	const slugs = getStudyNotesCategorySlugs();
-	return slugs.map((category) => ({ params: { category } }));
+	const categories = getStudyNotesCategoryPathParams();
+	return categories.map((category) => ({ params: { category } }));
 }
 
-const allowed = new Set(getStudyNotesCategorySlugs());
-const { category } = Astro.params;
+const categorySlugs = getStudyNotesCategorySlugs();
+const { category: categoryParam } = Astro.params;
+const category = resolveStudyNotesCategorySlug(categoryParam, categorySlugs);
 
-if (!category || !allowed.has(category)) {
+if (!category) {
 	return Astro.redirect("/404/");
+}
+
+if (categoryParam !== category) {
+	return Astro.redirect(
+		url(`/studyNotes/${encodeURIComponent(category)}/`),
+		301,
+	);
 }
 
 const SECTION = `studyNotes/${category}`;
