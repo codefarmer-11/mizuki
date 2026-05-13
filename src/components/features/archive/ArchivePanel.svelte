@@ -6,22 +6,22 @@
 	export let tags: string[];
 	export let categories: string[];
 	export let sortedPosts: Post[] = [];
-
-	const params = new URLSearchParams(window.location.search);
-	tags = params.has("tag") ? params.getAll("tag") : [];
-	categories = params.has("category") ? params.getAll("category") : [];
-	const uncategorized = params.get("uncategorized");
+	/**
+	 * 为 true 时根据地址栏 ?tag= / ?category= 过滤（归档页行为）。
+	 * 手记等子列表应设为 false，否则从「带查询的归档」跳转过来时会把子目录文章全部滤掉。
+	 */
+	export let applyUrlQueryFilters = true;
 
 	interface Post {
 		id: string;
-		url?: string; // 预计算的文章 URL
+		url?: string;
 		data: {
 			title: string;
 			tags: string[];
 			category?: string;
-			published: Date;
+			published: Date | string;
 			alias?: string;
-			permalink?: string; // 自定义固定链接
+			permalink?: string;
 		};
 	}
 
@@ -31,6 +31,13 @@
 	}
 
 	let groups: Group[] = [];
+
+	function toPublishedDate(published: Date | string): Date {
+		if (published instanceof Date) {
+			return published;
+		}
+		return new Date(published);
+	}
 
 	function formatDate(date: Date) {
 		const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -43,21 +50,41 @@
 	}
 
 	onMount(async () => {
-		let filteredPosts: Post[] = sortedPosts;
+		const normalized: Post[] = sortedPosts.map((post) => ({
+			...post,
+			data: {
+				...post.data,
+				published: toPublishedDate(post.data.published),
+			},
+		}));
 
-		if (tags.length > 0) {
+		let urlTags: string[] = [];
+		let urlCategories: string[] = [];
+		let uncategorized: string | null = null;
+		if (applyUrlQueryFilters) {
+			const params = new URLSearchParams(window.location.search);
+			urlTags = params.has("tag") ? params.getAll("tag") : [];
+			urlCategories = params.has("category")
+				? params.getAll("category")
+				: [];
+			uncategorized = params.get("uncategorized");
+		}
+
+		let filteredPosts: Post[] = normalized;
+
+		if (urlTags.length > 0) {
 			filteredPosts = filteredPosts.filter(
 				(post) =>
 					Array.isArray(post.data.tags) &&
-					post.data.tags.some((tag) => tags.includes(tag)),
+					post.data.tags.some((tag) => urlTags.includes(tag)),
 			);
 		}
 
-		if (categories.length > 0) {
+		if (urlCategories.length > 0) {
 			filteredPosts = filteredPosts.filter(
 				(post) =>
 					post.data.category &&
-					categories.includes(post.data.category),
+					urlCategories.includes(post.data.category),
 			);
 		}
 
@@ -65,17 +92,17 @@
 			filteredPosts = filteredPosts.filter((post) => !post.data.category);
 		}
 
-		// 按发布时间倒序排序，确保不受置顶影响
 		filteredPosts = filteredPosts
 			.slice()
 			.sort(
 				(a, b) =>
-					b.data.published.getTime() - a.data.published.getTime(),
+					toPublishedDate(b.data.published).getTime() -
+					toPublishedDate(a.data.published).getTime(),
 			);
 
 		const grouped = filteredPosts.reduce(
 			(acc, post) => {
-				const year = post.data.published.getFullYear();
+				const year = toPublishedDate(post.data.published).getFullYear();
 				if (!acc[year]) {
 					acc[year] = [];
 				}
@@ -130,14 +157,12 @@
 					<div
 						class="flex flex-row justify-start items-center h-full"
 					>
-						<!-- date -->
 						<div
 							class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
 						>
-							{formatDate(post.data.published)}
+							{formatDate(toPublishedDate(post.data.published))}
 						</div>
 
-						<!-- dot and line -->
 						<div
 							class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
 						>
@@ -151,7 +176,6 @@
 							></div>
 						</div>
 
-						<!-- post title -->
 						<div
 							class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
                      group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
@@ -160,7 +184,6 @@
 							{post.data.title}
 						</div>
 
-						<!-- tag list -->
 						<div
 							class="hidden md:block md:w-[15%] text-left text-sm transition
                      whitespace-nowrap overflow-ellipsis overflow-hidden text-30"

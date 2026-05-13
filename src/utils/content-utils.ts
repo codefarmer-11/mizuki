@@ -44,7 +44,9 @@ async function getRawSortedPosts() {
 
 /** 文章 id 是否属于某一级目录（如 cookbook、essay）或嵌套前缀（如 studyNotes/c） */
 export function postIdMatchesSection(id: string, section: string): boolean {
-	return id === section || id.startsWith(`${section}/`);
+	const nid = id.replace(/\\/g, "/");
+	const nsec = section.replace(/\\/g, "/");
+	return nid === nsec || nid.startsWith(`${nsec}/`);
 }
 
 /** 与全站排序规则一致，但只保留 id 以 `section/`（或等于 `section`）开头的文章，并预计算 URL */
