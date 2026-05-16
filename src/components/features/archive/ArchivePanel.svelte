@@ -12,8 +12,8 @@
 	 */
 	export let applyUrlQueryFilters = true;
 	/**
-	 * 手记分区路径（如 /cookbook/）。设置后启用分区 URL 筛选，
-	 * 且仅接受当前列表内存在的 tag/category，避免从归档页带参跳转时列表被清空。
+	 * 手记分区路径（如 /cookbook/）。启用分区 ?tag= 筛选，
+	 * 且仅接受当前列表内存在的 tag，避免从归档页带参跳转时列表被清空。
 	 */
 	export let filterBasePath: string | undefined = undefined;
 
@@ -36,7 +36,6 @@
 	}
 
 	let groups: Group[] = [];
-	let activeSearchParams = new URLSearchParams();
 
 	$: useUrlFilters = applyUrlQueryFilters || !!filterBasePath;
 
@@ -53,6 +52,10 @@
 		return `${month}-${day}`;
 	}
 
+	function formatTag(tagList: string[]) {
+		return tagList.map((t) => `#${t}`).join(" ");
+	}
+
 	function sanitizeSearchParams(
 		searchParams: URLSearchParams,
 	): URLSearchParams {
@@ -64,14 +67,6 @@
 			if (tags.includes(tag)) {
 				next.append("tag", tag);
 			}
-		}
-		for (const category of searchParams.getAll("category")) {
-			if (categories.includes(category)) {
-				next.append("category", category);
-			}
-		}
-		if (searchParams.has("uncategorized")) {
-			next.set("uncategorized", searchParams.get("uncategorized") ?? "true");
 		}
 		return next;
 	}
@@ -95,10 +90,12 @@
 		if (useUrlFilterMode) {
 			const scopedParams = sanitizeSearchParams(searchParams);
 			urlTags = scopedParams.has("tag") ? scopedParams.getAll("tag") : [];
-			urlCategories = scopedParams.has("category")
-				? scopedParams.getAll("category")
-				: [];
-			uncategorized = scopedParams.get("uncategorized");
+			if (!filterBasePath) {
+				urlCategories = searchParams.has("category")
+					? searchParams.getAll("category")
+					: [];
+				uncategorized = searchParams.get("uncategorized");
+			}
 		}
 
 		let filteredPosts: Post[] = normalized;
@@ -158,15 +155,13 @@
 			typeof window !== "undefined"
 				? new URLSearchParams(window.location.search)
 				: new URLSearchParams();
-		activeSearchParams = sanitizeSearchParams(params);
 		groups = buildArchiveGroups(sortedPosts, params, useUrlFilters);
 	}
 
 	function getRowTagHref(tag: string): string {
 		const trimmed = tag.trim();
 		if (filterBasePath) {
-			const category = activeSearchParams.get("category") ?? undefined;
-			return getSectionTagUrl(filterBasePath, trimmed, category);
+			return getSectionTagUrl(filterBasePath, trimmed);
 		}
 		return getTagUrl(trimmed);
 	}
@@ -218,71 +213,67 @@
 			</div>
 
 			{#each group.posts as post}
-				<div class="group w-full rounded-lg hover:bg-[var(--btn-plain-bg-hover)]">
-					{#if post.data.tags?.length}
-						<div
-							class="flex flex-wrap gap-1.5 pl-[30%] md:pl-[20%] pr-4 pt-1 pb-0.5"
-						>
-							{#each post.data.tags as tag}
-								<a
-									href={getRowTagHref(tag)}
-									class="section-tag-pill text-xs px-2 py-0.5 rounded-md
-									       text-50 hover:text-[var(--primary)] transition-colors"
-									aria-label={`View posts tagged with ${tag.trim()}`}
-									on:click={stopRowNavigation}
-								>
-									# {tag.trim()}
-								</a>
-							{/each}
-						</div>
-					{/if}
-					<a
-						href={post.url || `/posts/${post.id}/`}
-						aria-label={post.data.title}
-						class="btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
+				<a
+					href={post.url || `/posts/${post.id}/`}
+					aria-label={post.data.title}
+					class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
+				>
+					<div
+						class="flex flex-row justify-start items-center h-full"
 					>
 						<div
-							class="flex flex-row justify-start items-center h-full"
+							class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
+						>
+							{formatDate(toPublishedDate(post.data.published))}
+						</div>
+
+						<div
+							class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
 						>
 							<div
-								class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
-							>
-								{formatDate(toPublishedDate(post.data.published))}
-							</div>
-
-							<div
-								class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
-							>
-								<div
-									class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
+								class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
                        bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
                        outline outline-4 z-50
                        outline-[var(--card-bg)]
                        group-hover:outline-[var(--btn-plain-bg-hover)]
                        group-active:outline-[var(--btn-plain-bg-active)]"
-								></div>
-							</div>
+							></div>
+						</div>
 
-							<div
-								class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
+						<div
+							class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
                      group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
                      text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
-							>
-								{post.data.title}
-							</div>
+						>
+							{post.data.title}
 						</div>
-					</a>
-				</div>
+
+						<div
+							class="hidden md:flex md:w-[15%] text-left text-sm transition
+                     flex-wrap gap-x-1.5 gap-y-0.5 text-30"
+						>
+							{#if filterBasePath && post.data.tags?.length}
+								{#each post.data.tags as tag}
+									<a
+										href={getRowTagHref(tag)}
+										class="hover:text-[var(--primary)] whitespace-nowrap"
+										aria-label={`View posts tagged with ${tag.trim()}`}
+										on:click={stopRowNavigation}
+									>
+										#{tag.trim()}
+									</a>
+								{/each}
+							{:else}
+								<span
+									class="whitespace-nowrap overflow-ellipsis overflow-hidden"
+								>
+									{formatTag(post.data.tags)}
+								</span>
+							{/if}
+						</div>
+					</div>
+				</a>
 			{/each}
 		</div>
 	{/each}
 </div>
-
-<style>
-	.section-tag-pill {
-		border: 1px solid var(--line-divider);
-	}
-	.section-tag-pill:hover {
-		border-color: var(--primary);
-	}
-</style>
