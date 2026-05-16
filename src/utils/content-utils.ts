@@ -182,6 +182,69 @@ export async function getCategoryList(): Promise<Category[]> {
 	return ret;
 }
 
+type PostWithMeta = {
+	data: { tags?: string[]; category?: string | null };
+};
+
+/** 从文章列表统计分类（用于手记分区页） */
+export function getCategoriesFromPosts(
+	posts: PostWithMeta[],
+): { name: string; count: number }[] {
+	const count: Record<string, number> = {};
+	for (const post of posts) {
+		const raw = post.data.category;
+		if (raw == null || (typeof raw === "string" && !raw.trim())) {
+			continue;
+		}
+		const name =
+			typeof raw === "string" ? raw.trim() : String(raw).trim();
+		count[name] = (count[name] ?? 0) + 1;
+	}
+	return Object.keys(count)
+		.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.map((name) => ({ name, count: count[name] }));
+}
+
+/** 从文章列表统计标签，可按 frontmatter category 筛选 */
+export function getTagsFromPosts(
+	posts: PostWithMeta[],
+	category?: string,
+): { name: string; count: number }[] {
+	let list = posts;
+	if (category) {
+		list = posts.filter((post) => {
+			const c = post.data.category;
+			return typeof c === "string" && c.trim() === category;
+		});
+	}
+	const countMap: Record<string, number> = {};
+	for (const post of list) {
+		for (const tag of post.data.tags ?? []) {
+			if (!tag?.trim()) {
+				continue;
+			}
+			const name = tag.trim();
+			countMap[name] = (countMap[name] ?? 0) + 1;
+		}
+	}
+	return Object.keys(countMap)
+		.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		.map((name) => ({ name, count: countMap[name] }));
+}
+
+/** 各分类下的标签索引，key 为空字符串表示全部分类 */
+export function buildSectionTagIndex(
+	posts: PostWithMeta[],
+): Record<string, { name: string; count: number }[]> {
+	const index: Record<string, { name: string; count: number }[]> = {
+		"": getTagsFromPosts(posts),
+	};
+	for (const cat of getCategoriesFromPosts(posts)) {
+		index[cat.name] = getTagsFromPosts(posts, cat.name);
+	}
+	return index;
+}
+
 /**
  * 对标题进行分词，支持中英文混合
  *

@@ -1,19 +1,21 @@
 ---
 import ArchivePanel from "@components/features/archive/ArchivePanel.svelte";
-import CategoryBar from "@components/features/posts/CategoryBar.astro";
+import SectionFilterBar from "@components/features/posts/SectionFilterBar.astro";
 import Comment from "@components/comment/index.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPostsListByIdPrefix } from "@utils/content-utils";
-import { siteConfig } from "../config";
-
+import {
+	buildSectionTagIndex,
+	getCategoriesFromPosts,
+	getSortedPostsListByIdPrefix,
+} from "@utils/content-utils";
 export const prerender = true;
 
 /** 与内容仓库 `posts/essay/` 目录对应（请勿使用 essey 等拼写错误的文件夹名） */
 const SECTION = "essay";
+const BASE_PATH = "/essay/";
 const sortedPostsList = await getSortedPostsListByIdPrefix(SECTION);
-const showCategoryBar = siteConfig.postListLayout.categoryBar?.enable ?? false;
 
 const posts = sortedPostsList.map((post) => ({
 	...post,
@@ -32,11 +34,13 @@ const categories = [
 	),
 ];
 
+const sectionCategories = getCategoriesFromPosts(posts);
+const tagIndex = buildSectionTagIndex(posts);
+
 const title = i18n(I18nKey.essay);
 ---
 
 <MainGridLayout title={title} description={title}>
-	{showCategoryBar && <CategoryBar />}
 	<script>
 		import("../scripts/right-sidebar-layout.js");
 	</script>
@@ -45,11 +49,18 @@ const title = i18n(I18nKey.essay);
 		class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
 	>
 		<div class="card-base z-10 px-6 sm:px-9 py-6 relative w-full">
+			<SectionFilterBar
+				basePath={BASE_PATH}
+				categories={sectionCategories}
+				tagIndex={tagIndex}
+				totalCount={posts.length}
+			/>
 			<ArchivePanel
 				sortedPosts={posts}
 				tags={tags}
 				categories={categories}
-				applyUrlQueryFilters={false}
+				filterBasePath={BASE_PATH}
+				client:load
 			/>
 		</div>
 	</div>

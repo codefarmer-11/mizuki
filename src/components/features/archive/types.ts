@@ -2,6 +2,8 @@ export interface ArchivePanelProps {
 	tags: string[];
 	categories: string[];
 	sortedPosts: Post[];
+	applyUrlQueryFilters?: boolean;
+	filterBasePath?: string;
 }
 
 export interface Post {

@@ -72,6 +72,43 @@ export function getTagUrl(tag: string): string {
 	return url(`/archive/?tag=${encodeURIComponent(tag.trim())}`);
 }
 
+/** 手记分区列表页（cookbook / essay 等）的查询链接 */
+export function getSectionListUrl(
+	basePath: string,
+	opts?: { category?: string; tag?: string; uncategorized?: boolean },
+): string {
+	const normalizedPath = basePath.replace(/\/?$/, "/");
+	const params = new URLSearchParams();
+	if (opts?.uncategorized) {
+		params.set("uncategorized", "true");
+	} else if (opts?.category?.trim()) {
+		params.set("category", opts.category.trim());
+	}
+	if (opts?.tag?.trim()) {
+		params.append("tag", opts.tag.trim());
+	}
+	const query = params.toString();
+	return query ? url(`${normalizedPath}?${query}`) : url(normalizedPath);
+}
+
+export function getSectionTagUrl(
+	basePath: string,
+	tag: string,
+	category?: string,
+): string {
+	return getSectionListUrl(basePath, { category, tag });
+}
+
+export function getSectionCategoryUrl(
+	basePath: string,
+	category: string | null,
+): string {
+	if (!category?.trim()) {
+		return getSectionListUrl(basePath);
+	}
+	return getSectionListUrl(basePath, { category: category.trim() });
+}
+
 export function getCategoryUrl(category: string | null): string {
 	if (
 		!category ||

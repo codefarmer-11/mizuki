@@ -1,6 +1,7 @@
 <script lang="ts">
 	import I18nKey from "@i18n/i18nKey";
 	import { i18n } from "@i18n/translation";
+	import { getSectionTagUrl, getTagUrl } from "@utils/url-utils";
 	import { onMount } from "svelte";
 
 	export let tags: string[];
@@ -8,9 +9,13 @@
 	export let sortedPosts: Post[] = [];
 	/**
 	 * 为 true 时根据地址栏 ?tag= / ?category= 过滤（归档页行为）。
-	 * 手记等子列表应设为 false，否则从「带查询的归档」跳转过来时会把子目录文章全部滤掉。
 	 */
 	export let applyUrlQueryFilters = true;
+	/**
+	 * 手记分区路径（如 /cookbook/）。设置后启用分区 URL 筛选，
+	 * 且仅接受当前列表内存在的 tag/category，避免从归档页带参跳转时列表被清空。
+	 */
+	export let filterBasePath: string | undefined = undefined;
 
 	interface Post {
 		id: string;
@@ -31,6 +36,9 @@
 	}
 
 	let groups: Group[] = [];
+	let activeSearchParams = new URLSearchParams();
+
+	$: useUrlFilters = applyUrlQueryFilters || !!filterBasePath;
 
 	function toPublishedDate(published: Date | string): Date {
 		if (published instanceof Date) {
@@ -45,14 +53,33 @@
 		return `${month}-${day}`;
 	}
 
-	function formatTag(tagList: string[]) {
-		return tagList.map((t) => `#${t}`).join(" ");
+	function sanitizeSearchParams(
+		searchParams: URLSearchParams,
+	): URLSearchParams {
+		if (!filterBasePath) {
+			return searchParams;
+		}
+		const next = new URLSearchParams();
+		for (const tag of searchParams.getAll("tag")) {
+			if (tags.includes(tag)) {
+				next.append("tag", tag);
+			}
+		}
+		for (const category of searchParams.getAll("category")) {
+			if (categories.includes(category)) {
+				next.append("category", category);
+			}
+		}
+		if (searchParams.has("uncategorized")) {
+			next.set("uncategorized", searchParams.get("uncategorized") ?? "true");
+		}
+		return next;
 	}
 
 	function buildArchiveGroups(
 		postsInput: Post[],
 		searchParams: URLSearchParams,
-		useUrlFilters: boolean,
+		useUrlFilterMode: boolean,
 	): Group[] {
 		const normalized: Post[] = postsInput.map((post) => ({
 			...post,
@@ -65,12 +92,13 @@
 		let urlTags: string[] = [];
 		let urlCategories: string[] = [];
 		let uncategorized: string | null = null;
-		if (useUrlFilters) {
-			urlTags = searchParams.has("tag") ? searchParams.getAll("tag") : [];
-			urlCategories = searchParams.has("category")
-				? searchParams.getAll("category")
+		if (useUrlFilterMode) {
+			const scopedParams = sanitizeSearchParams(searchParams);
+			urlTags = scopedParams.has("tag") ? scopedParams.getAll("tag") : [];
+			urlCategories = scopedParams.has("category")
+				? scopedParams.getAll("category")
 				: [];
-			uncategorized = searchParams.get("uncategorized");
+			uncategorized = scopedParams.get("uncategorized");
 		}
 
 		let filteredPosts: Post[] = normalized;
@@ -125,17 +153,41 @@
 		return groupedPostsArray;
 	}
 
-	$: if (!applyUrlQueryFilters) {
+	function refreshGroups() {
+		const params =
+			typeof window !== "undefined"
+				? new URLSearchParams(window.location.search)
+				: new URLSearchParams();
+		activeSearchParams = sanitizeSearchParams(params);
+		groups = buildArchiveGroups(sortedPosts, params, useUrlFilters);
+	}
+
+	function getRowTagHref(tag: string): string {
+		const trimmed = tag.trim();
+		if (filterBasePath) {
+			const category = activeSearchParams.get("category") ?? undefined;
+			return getSectionTagUrl(filterBasePath, trimmed, category);
+		}
+		return getTagUrl(trimmed);
+	}
+
+	function stopRowNavigation(event: MouseEvent) {
+		event.stopPropagation();
+	}
+
+	$: if (!useUrlFilters) {
 		groups = buildArchiveGroups(sortedPosts, new URLSearchParams(), false);
 	}
 
 	onMount(() => {
-		if (applyUrlQueryFilters) {
-			groups = buildArchiveGroups(
-				sortedPosts,
-				new URLSearchParams(window.location.search),
-				true,
-			);
+		if (useUrlFilters) {
+			refreshGroups();
+			document.addEventListener("astro:page-load", refreshGroups);
+			document.addEventListener("swup:contentReplaced", refreshGroups);
+			return () => {
+				document.removeEventListener("astro:page-load", refreshGroups);
+				document.removeEventListener("swup:contentReplaced", refreshGroups);
+			};
 		}
 	});
 </script>
@@ -166,50 +218,71 @@
 			</div>
 
 			{#each group.posts as post}
-				<a
-					href={post.url || `/posts/${post.id}/`}
-					aria-label={post.data.title}
-					class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
-				>
-					<div
-						class="flex flex-row justify-start items-center h-full"
+				<div class="group w-full rounded-lg hover:bg-[var(--btn-plain-bg-hover)]">
+					{#if post.data.tags?.length}
+						<div
+							class="flex flex-wrap gap-1.5 pl-[30%] md:pl-[20%] pr-4 pt-1 pb-0.5"
+						>
+							{#each post.data.tags as tag}
+								<a
+									href={getRowTagHref(tag)}
+									class="section-tag-pill text-xs px-2 py-0.5 rounded-md
+									       text-50 hover:text-[var(--primary)] transition-colors"
+									aria-label={`View posts tagged with ${tag.trim()}`}
+									on:click={stopRowNavigation}
+								>
+									# {tag.trim()}
+								</a>
+							{/each}
+						</div>
+					{/if}
+					<a
+						href={post.url || `/posts/${post.id}/`}
+						aria-label={post.data.title}
+						class="btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
 					>
 						<div
-							class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
-						>
-							{formatDate(toPublishedDate(post.data.published))}
-						</div>
-
-						<div
-							class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
+							class="flex flex-row justify-start items-center h-full"
 						>
 							<div
-								class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
+								class="w-[15%] md:w-[10%] transition text-sm text-right text-50"
+							>
+								{formatDate(toPublishedDate(post.data.published))}
+							</div>
+
+							<div
+								class="w-[15%] md:w-[10%] relative dash-line h-full flex items-center"
+							>
+								<div
+									class="transition-all mx-auto w-1 h-1 rounded group-hover:h-5
                        bg-[oklch(0.5_0.05_var(--hue))] group-hover:bg-[var(--primary)]
                        outline outline-4 z-50
                        outline-[var(--card-bg)]
                        group-hover:outline-[var(--btn-plain-bg-hover)]
                        group-active:outline-[var(--btn-plain-bg-active)]"
-							></div>
-						</div>
+								></div>
+							</div>
 
-						<div
-							class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
+							<div
+								class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
                      group-hover:translate-x-1 transition-all group-hover:text-[var(--primary)]
                      text-75 pr-8 whitespace-nowrap overflow-ellipsis overflow-hidden"
-						>
-							{post.data.title}
+							>
+								{post.data.title}
+							</div>
 						</div>
-
-						<div
-							class="hidden md:block md:w-[15%] text-left text-sm transition
-                     whitespace-nowrap overflow-ellipsis overflow-hidden text-30"
-						>
-							{formatTag(post.data.tags)}
-						</div>
-					</div>
-				</a>
+					</a>
+				</div>
 			{/each}
 		</div>
 	{/each}
 </div>
+
+<style>
+	.section-tag-pill {
+		border: 1px solid var(--line-divider);
+	}
+	.section-tag-pill:hover {
+		border-color: var(--primary);
+	}
+</style>
