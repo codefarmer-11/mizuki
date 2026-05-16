@@ -5,7 +5,7 @@
   <link href="https://lysj.work/" rel="alternate" type="text/html"/>
   <link href="https://lysj.work/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://lysj.work/</id>
-  <updated>2026-05-16T09:20:49.441Z</updated>
+  <updated>2026-05-16T09:29:06.713Z</updated>
   <language>zh_CN</language>
   <entry>
     <title>Markdown Tutorial</title>
@@ -736,9 +736,9 @@ This is another regular paragraph.
     <id>https://lysj.work/posts/studynotes/network/network%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/</id>
     <published>2026-05-16T00:00:00.000Z</published>
     <updated>2026-05-16T00:00:00.000Z</updated>
-    <summary>TCP/IP 四层模型、各层协议、常用端口与核心概念速查</summary>
+    <summary>TCP/IP 四层模型、各层协议、常用端口</summary>
     <content type="html"><![CDATA[<h2>概述</h2>
-<p>计算机网络按功能分层，上层依赖下层提供服务，下层对上层透明。日常开发与运维最常对照的是 <strong>OSI 七层</strong> 与 <strong>TCP/IP 四层</strong>；后者是互联网事实标准，也是本文的组织方式。</p>
+<p>计算机网络按功能分层，上层依赖下层提供服务，下层对上层透明。</p>
 <h3>OSI 7 层模型</h3>
 <table>
 <thead>

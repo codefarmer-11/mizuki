@@ -708,8 +708,8 @@ This is another regular paragraph.
 &lt;strong&gt;No Work&lt;/strong&gt;
 &amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;hr /&gt;
-</content:encoded></item><item><title>【Network】计算机网络概述</title><link>https://lysj.work/posts/studynotes/network/network%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/</link><guid isPermaLink="true">https://lysj.work/posts/studynotes/network/network%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/</guid><description>TCP/IP 四层模型、各层协议、常用端口与核心概念速查</description><pubDate>Sat, 16 May 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;概述&lt;/h2&gt;
-&lt;p&gt;计算机网络按功能分层，上层依赖下层提供服务，下层对上层透明。日常开发与运维最常对照的是 &lt;strong&gt;OSI 七层&lt;/strong&gt; 与 &lt;strong&gt;TCP/IP 四层&lt;/strong&gt;；后者是互联网事实标准，也是本文的组织方式。&lt;/p&gt;
+</content:encoded></item><item><title>【Network】计算机网络概述</title><link>https://lysj.work/posts/studynotes/network/network%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/</link><guid isPermaLink="true">https://lysj.work/posts/studynotes/network/network%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E8%BF%B0/</guid><description>TCP/IP 四层模型、各层协议、常用端口</description><pubDate>Sat, 16 May 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;概述&lt;/h2&gt;
+&lt;p&gt;计算机网络按功能分层，上层依赖下层提供服务，下层对上层透明。&lt;/p&gt;
 &lt;h3&gt;OSI 7 层模型&lt;/h3&gt;
 &lt;table&gt;
 &lt;thead&gt;
